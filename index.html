@@ -9,7 +9,7 @@
 :root{--bg:#05070b;--panel:rgba(8,13,23,.88);--line:rgba(255,255,255,.11);--text:#f7f9ff;--muted:#90a0ba;--cyan:#64eaff;--violet:#9b7fff;--pink:#ff66c7;--red:#ff5f7f;--green:#67efbc;--gold:#ffc95f}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}
 button,input,select{font:inherit}button{cursor:pointer}#app{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
-#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;background:#000}#app{position:fixed;inset:0;z-index:1;background:transparent}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;background:#000;transform:translateZ(0)}#app{position:fixed;inset:0;z-index:1;background:transparent}
 .ui{position:fixed;inset:0;z-index:10;pointer-events:none}
 .top{position:absolute;left:0;right:0;top:0;padding:max(10px,env(safe-area-inset-top)) 10px 0;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .brand,.actions,.hud,.info,.dock,.library,.modal{pointer-events:auto}
@@ -102,8 +102,55 @@ function renderInfo(){const c=data[selected];$("info").innerHTML="<h2>"+c.name+"
 function renderCards(){const q=$("search").value.toLowerCase(),f=$("filter").value,box=$("cards");box.innerHTML="";data.forEach((c,i)=>{if(q&&!c.name.toLowerCase().includes(q))return;if(f&&!c.type.includes(f))return;const b=document.createElement("button");b.className="card"+(i===selected?" sel":"");b.innerHTML="<b>"+c.name+"</b><span>"+c.attribute+" • "+c.type+"</span><span class='stat'>ATK "+c.atk+" / DEF "+c.def+"</span>";b.onclick=()=>{selected=i;renderCards();renderInfo()};box.appendChild(b)})}
 ["Normal","Effect","Fusion","Synchro","Xyz","Pendulum","Link","Divine"].forEach(t=>$("filter").insertAdjacentHTML("beforeend","<option>"+t+"</option>"));$("search").oninput=renderCards;$("filter").onchange=renderCards;
 $("summon").onclick=()=>spawn(false);$("battle").onclick=()=>{battle=true;$("phase").textContent="BATTLE PHASE";tip("Saldırı yapabilirsin")};$("attack").onclick=attack;$("end").onclick=endTurn;$("mode3d").onclick=async()=>{const s=renderer.xr.getSession();if(s)try{await s.end()}catch{};stereo=false;isVR=false;$("vrExit").style.display="none";if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}$("cam").style.display="none";mode="3d";scene.background=new THREE.Color(0x05070b);arena.position.set(0,0,-1.2);camera.position.set(0,1.65,4.8);yaw=0;pitch=-.18;tip("3D mod aktif — kamera/AR gerekmez")};
-$("camera").onclick=async()=>{try{const xr=renderer.xr.getSession();if(xr)try{await xr.end()}catch{};if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;$("cam").srcObject=null;$("cam").style.display="none";scene.background=new THREE.Color(0x05070b);tip("Kamera kapandı");return}if(!navigator.mediaDevices?.getUserMedia)throw new Error("getUserMedia yok");camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false});$("cam").srcObject=camStream;await $("cam").play();$("cam").style.display="block";scene.background=null;mode="camera";tip("Kamera açık — AR Lite: 3B oyun kameranın üstünde")}catch(e){tip("Kamera açılamadı. Chrome > Site ayarları > Kamera > İzin ver. 3D mod çalışır.")}};
-async function startAR(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;$("cam").srcObject=null;$("cam").style.display="none"}if(!navigator.xr){tip("WebXR yok → KAMERA butonuna bas; AR Lite çalışır");$("camera").click();return}const ok=await navigator.xr.isSessionSupported("immersive-ar").catch(()=>false);if(!ok){tip("Gerçek AR desteklenmiyor → AR Lite kameraya geçiliyor");$("camera").click();return}try{const s=await navigator.xr.requestSession("immersive-ar",{requiredFeatures:["hit-test"],optionalFeatures:["dom-overlay","local-floor"],domOverlay:{root:document.body}});await renderer.xr.setSession(s)}catch(e){tip("WebXR AR açılamadı → AR Lite kameraya geçiliyor");$("camera").click()}}
+$("camera").onclick=async()=>{
+ const v=$("cam");
+ try{
+   const xr=renderer.xr.getSession();if(xr)try{await xr.end()}catch{}
+   if(camStream){
+     camStream.getTracks().forEach(t=>t.stop());camStream=null;v.srcObject=null;v.pause();v.style.display="none";
+     scene.background=new THREE.Color(0x05070b);mode="3d";tip("Kamera kapandı");return;
+   }
+   if(!window.isSecureContext)throw Object.assign(new Error("HTTPS gerekli"),{name:"InsecureContext"});
+   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw Object.assign(new Error("Tarayıcı getUserMedia desteklemiyor"),{name:"Unsupported"});
+   v.setAttribute("autoplay","");v.setAttribute("muted","");v.setAttribute("playsinline","");v.setAttribute("webkit-playsinline","");
+   v.muted=true;v.autoplay=true;v.playsInline=true;v.style.display="block";
+   let stream=null;
+   const attempts=[
+     {video:{facingMode:{exact:"environment"}},audio:false},
+     {video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false},
+     {video:true,audio:false}
+   ];
+   let lastErr=null;
+   for(const constraints of attempts){
+     try{stream=await navigator.mediaDevices.getUserMedia(constraints);break}catch(err){lastErr=err}
+   }
+   if(!stream)throw lastErr||new Error("Kamera akışı alınamadı");
+   camStream=stream;v.srcObject=stream;
+   await new Promise((resolve,reject)=>{
+     if(v.readyState>=1)return resolve();
+     const to=setTimeout(()=>reject(new Error("Kamera zaman aşımı")),5000);
+     v.onloadedmetadata=()=>{clearTimeout(to);resolve()};
+   });
+   await v.play();
+   renderer.setClearColor(0x000000,0);scene.background=null;mode="camera";
+   const track=stream.getVideoTracks()[0],settings=track?.getSettings?.()||{};
+   tip("Kamera açık"+(settings.facingMode?" • "+settings.facingMode:"")+" — 3B sahne kameranın üstünde");
+ }catch(e){
+   console.error("Camera error",e);
+   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}
+   v.srcObject=null;v.style.display="none";scene.background=new THREE.Color(0x05070b);
+   const n=e?.name||"Hata";
+   let msg="Kamera açılamadı: "+n;
+   if(n==="NotAllowedError")msg="Kamera izni reddedildi. Adres çubuğu > Site ayarları > Kamera > İzin ver, sonra yenile.";
+   else if(n==="NotFoundError")msg="Bu cihazda kullanılabilir kamera bulunamadı.";
+   else if(n==="NotReadableError")msg="Kamera başka uygulama tarafından kullanılıyor olabilir. Diğer kamera uygulamalarını kapat.";
+   else if(n==="InsecureContext")msg="Kamera için HTTPS gerekiyor.";
+   else if(n==="Unsupported")msg="Bu tarayıcı kamera API'sini desteklemiyor. Chrome ile aç.";
+   else if(n==="OverconstrainedError")msg="Arka kamera seçilemedi; sayfayı yenileyip tekrar dene.";
+   tip(msg);
+ }
+};
+async function startAR(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;$("cam").srcObject=null;$("cam").style.display="none"}if(!navigator.xr){tip("Gerçek WebXR yok → kamera tabanlı AR Lite açılıyor");await $("camera").onclick();return}const ok=await navigator.xr.isSessionSupported("immersive-ar").catch(()=>false);if(!ok){tip("Gerçek AR desteklenmiyor → kamera tabanlı AR Lite açılıyor");await $("camera").onclick();return}try{const s=await navigator.xr.requestSession("immersive-ar",{requiredFeatures:["hit-test"],optionalFeatures:["dom-overlay","local-floor"],domOverlay:{root:document.body}});await renderer.xr.setSession(s)}catch(e){tip("WebXR AR açılamadı → kamera tabanlı AR Lite açılıyor");await $("camera").onclick()}}
 $("ar").onclick=startAR;$("vr").onclick=async()=>{if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;$("cam").srcObject=null;$("cam").style.display="none"}if(navigator.xr&&await navigator.xr.isSessionSupported("immersive-vr").catch(()=>false)){try{const s=await navigator.xr.requestSession("immersive-vr",{optionalFeatures:["local-floor"]});await renderer.xr.setSession(s);return}catch(e){}}stereo=true;$("vrExit").style.display="inline-block";scene.background=new THREE.Color(0x05070b);tip("VR fallback aktif — ekran iki göze bölündü")};$("vrExit").onclick=()=>{stereo=false;$("vrExit").style.display="none";$("mode3d").click()};renderer.xr.addEventListener("sessionstart",()=>{const s=renderer.xr.getSession();isAR=s?.mode==="immersive-ar";isVR=s?.mode==="immersive-vr";scene.background=null;tip(isAR?"Gerçek WebXR AR aktif — telefonu yüzeye doğru hareket ettir":"Gerçek WebXR VR aktif")});renderer.xr.addEventListener("sessionend",()=>{isAR=false;isVR=false;hitSource=null;hitRequested=false;ret.visible=false;if(!camStream)scene.background=new THREE.Color(0x05070b)});
 function updateXR(frame){if(!isAR||!frame)return;const session=renderer.xr.getSession(),ref=renderer.xr.getReferenceSpace();if(!hitRequested){session.requestReferenceSpace("viewer").then(v=>session.requestHitTestSource({space:v}).then(src=>hitSource=src));hitRequested=true}if(hitSource){const h=frame.getHitTestResults(hitSource);if(h.length){const pose=h[0].getPose(ref);ret.visible=true;ret.matrix.fromArray(pose.transform.matrix);lastHit.copy(ret.matrix);const p=new THREE.Vector3(),q=new THREE.Quaternion(),s=new THREE.Vector3();lastHit.decompose(p,q,s);arena.position.lerp(p,.08);arena.quaternion.slerp(q,.08)}else ret.visible=false}}
 $("atlasBtn").onclick=()=>$("atlasModal").classList.remove("hidden");$("typesBtn").onclick=()=>$("typesModal").classList.remove("hidden");document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=$(b.dataset.close).classList.add("hidden"));$("typeGrid").innerHTML=typeData.map(t=>"<div class='typeCard'><b>"+t[0]+"</b><p style='font-size:8px;color:#9eabc0'>"+t[1]+"</p></div>").join("");
