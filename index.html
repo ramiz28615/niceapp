@@ -4,159 +4,116 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#05070b">
-<title>NEXUS DUEL AR — Universal Edition</title>
+<title>NEXUS DUEL AR — Camera First</title>
 <style>
-:root{--bg:#05070b;--panel:rgba(8,13,23,.88);--line:rgba(255,255,255,.11);--text:#f7f9ff;--muted:#90a0ba;--cyan:#64eaff;--violet:#9b7fff;--pink:#ff66c7;--red:#ff5f7f;--green:#67efbc;--gold:#ffc95f}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}
-button,input,select{font:inherit}button{cursor:pointer}#app{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
-#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;background:#000;transform:translateZ(0)}#app{position:fixed;inset:0;z-index:1;background:transparent}
-.ui{position:fixed;inset:0;z-index:10;pointer-events:none}
+:root{--bg:#05070b;--panel:rgba(8,13,23,.88);--line:rgba(255,255,255,.12);--text:#f7f9ff;--muted:#90a0ba;--cyan:#64eaff;--violet:#9b7fff;--pink:#ff66c7;--red:#ff5f7f;--green:#67efbc}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}button,input{font:inherit}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:0;display:none}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.ui{position:fixed;inset:0;z-index:2;pointer-events:none}
+.top,.hud,.bottom,.drawer,.status{pointer-events:auto}
 .top{position:absolute;left:0;right:0;top:0;padding:max(10px,env(safe-area-inset-top)) 10px 0;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.brand,.actions,.hud,.info,.dock,.library,.modal{pointer-events:auto}
-.brand{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:15px;background:var(--panel);backdrop-filter:blur(16px)}
-.logo{width:34px;height:34px;border:1px solid #ffffff24;border-radius:11px;background:linear-gradient(145deg,#64eaff33,#9b7fff33);position:relative}.logo:after{content:"";position:absolute;inset:8px;border:2px solid var(--cyan);border-radius:4px;transform:rotate(45deg);box-shadow:0 0 14px #64eaff77}
-.brand b{font-size:11px;letter-spacing:.1em}.brand small{display:block;color:var(--muted);font-size:7px;margin-top:2px}.actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
-.btn{border:1px solid var(--line);background:#0a111ddd;color:#fff;border-radius:12px;padding:10px 11px;font-size:8px;font-weight:850;backdrop-filter:blur(14px)}.btn.primary{border:0;color:#061014;background:linear-gradient(135deg,var(--cyan),#aab8ff)}.btn.danger{border:0;background:linear-gradient(135deg,var(--red),var(--pink))}
-.hud{position:absolute;top:64px;left:10px;right:10px;display:grid;grid-template-columns:1fr auto 1fr;gap:7px;align-items:center}
-.lp,.turn{padding:7px 9px;border:1px solid var(--line);border-radius:13px;background:var(--panel);backdrop-filter:blur(15px)}.lp.r{text-align:right}.lp small,.turn small{display:block;font-size:6px;color:#7f8fa9;letter-spacing:.14em}.lp b{font-size:18px}.bar{height:3px;background:#ffffff18;border-radius:8px;overflow:hidden;margin-top:3px}.bar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));transition:.2s}.r .bar i{margin-left:auto;background:linear-gradient(90deg,#ff9d54,var(--red))}
-.turn{text-align:center;min-width:94px}.turn b{display:block;color:#d8faff;font-size:8px;margin-top:2px}.turn span{display:block;font-size:6px;color:#71809c;margin-top:2px}
-.tip{position:absolute;top:116px;left:50%;transform:translateX(-50%);padding:7px 10px;border:1px solid #ffffff12;border-radius:16px;background:#050810b8;color:#aec0d8;font-size:8px;white-space:nowrap}
-.info{position:absolute;left:10px;top:147px;width:min(320px,38vw);max-height:calc(100vh - 330px);overflow:auto;padding:11px;border-radius:17px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(18px)}
-.info h2{font-size:17px;margin:0 0 5px}.tag{display:inline-block;padding:3px 6px;border-radius:8px;background:#ffffff0d;color:#dbe5f5;font-size:7px}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:8px 0}.metric{padding:7px;border-radius:10px;background:#ffffff07;border:1px solid #ffffff0b}.metric small{display:block;color:#7f8fa8;font-size:6px}.metric b{font-size:12px}.info p{font-size:8px;color:#afbdd0;line-height:1.5;margin:6px 0}
-.library{position:absolute;right:10px;top:147px;width:min(330px,38vw);max-height:calc(100vh - 330px);overflow:hidden;padding:10px;border-radius:17px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(18px)}.tools{display:flex;gap:6px;margin-bottom:8px}.tools input,.tools select{height:32px;border-radius:10px;border:1px solid var(--line);background:#101827;color:#fff;padding:0 8px;font-size:8px;min-width:0}.tools input{flex:1}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;overflow:auto;max-height:calc(100vh - 390px)}.card{padding:7px;text-align:left;border:1px solid #ffffff16;border-radius:11px;background:linear-gradient(160deg,#18243c,#0b111c);color:#fff}.card.sel{border-color:var(--cyan);box-shadow:0 0 0 1px #64eaff44 inset}.card b{display:block;font-size:9px;margin-bottom:3px}.card span{display:block;font-size:7px;color:#aab6c9}.card .stat{color:#fff;font-weight:800}
-.dock{position:absolute;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:6px;padding:7px;border:1px solid var(--line);border-radius:16px;background:rgba(7,11,19,.82);backdrop-filter:blur(17px)}.dock .btn{height:40px}
-.modal{position:fixed;inset:0;z-index:30;background:#02040af0;display:grid;place-items:center;padding:15px}.hidden{display:none!important}.modalBox{width:min(980px,96vw);max-height:94vh;overflow:auto;background:#0a111d;border:1px solid var(--line);border-radius:20px;padding:12px}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.modalBox img{width:100%;display:block;border-radius:14px}.typeGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}.typeCard{padding:10px;border:1px solid var(--line);border-radius:12px;background:#ffffff06}.typeCard b{font-size:11px}.typeCard li{font-size:8px;color:#9eabc0;margin:3px 0}
-.mobileTabs{display:none}
-@media(max-width:900px){.info{width:44vw}.library{width:44vw}.actions .btn:nth-child(3){display:none}}
-@media(max-width:700px){
- .brand small{display:none}.top{padding-left:8px;padding-right:8px}.actions .btn{padding:8px}
- .hud{top:58px}.tip{top:111px;font-size:7px;max-width:88vw;overflow:hidden;text-overflow:ellipsis}
- .info{left:8px;right:8px;top:auto;bottom:138px;width:auto;max-height:210px}.library{left:8px;right:8px;top:auto;bottom:138px;width:auto;max-height:210px;display:none}.library.show{display:block}.info.hide{display:none}
- .cards{grid-template-columns:repeat(2,1fr);max-height:150px}.dock{bottom:8px;width:calc(100vw - 16px);justify-content:space-between;overflow-x:auto}.dock .btn{flex:1;min-width:70px;padding:0 8px}
- .mobileTabs{position:absolute;display:flex;left:50%;bottom:93px;transform:translateX(-50%);gap:5px;pointer-events:auto}.mobileTabs .btn{padding:8px 10px}
-}
+.brand{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:9px 11px;backdrop-filter:blur(16px)}
+.logo{width:34px;height:34px;border-radius:11px;border:1px solid #ffffff22;background:linear-gradient(145deg,#64eaff33,#9b7fff33);position:relative}.logo:after{content:"";position:absolute;inset:8px;border:2px solid var(--cyan);border-radius:4px;transform:rotate(45deg);box-shadow:0 0 14px #64eaff77}
+.brand b{font-size:11px;letter-spacing:.08em}.brand small{display:block;font-size:7px;color:var(--muted);margin-top:2px}
+.actions{display:flex;gap:5px}
+.btn{border:1px solid var(--line);background:#0a111ddd;color:#fff;border-radius:12px;padding:10px 11px;font-size:8px;font-weight:850;backdrop-filter:blur(14px}.primary{border:0;color:#061014;background:linear-gradient(135deg,var(--cyan),#aab8ff)}.danger{border:0;background:linear-gradient(135deg,var(--red),var(--pink))}
+.hud{position:absolute;top:64px;left:10px;right:10px;display:grid;grid-template-columns:1fr auto 1fr;gap:7px}.box{padding:7px 9px;border:1px solid var(--line);border-radius:13px;background:var(--panel);backdrop-filter:blur(15px)}.box.r{text-align:right}.box small{display:block;font-size:6px;color:#7f8fa9;letter-spacing:.14em}.box b{font-size:18px}.turn{text-align:center;min-width:95px}.turn b{display:block;font-size:8px;color:#d8faff}.bar{height:3px;background:#ffffff18;border-radius:8px;overflow:hidden;margin-top:3px}.bar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--green),var(--cyan))}
+.r .bar i{margin-left:auto;background:linear-gradient(90deg,#ff9d54,var(--red))}
+.status{position:absolute;top:118px;left:50%;transform:translateX(-50%);max-width:90vw;padding:7px 10px;border:1px solid #ffffff14;border-radius:16px;background:#050810c7;color:#b8c7da;font-size:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drawer{position:absolute;left:8px;right:8px;bottom:88px;height:166px;border:1px solid var(--line);border-radius:18px;background:var(--panel);backdrop-filter:blur(18px);padding:9px}
+.tools{display:flex;gap:6px;margin-bottom:8px}.tools input{width:100%;height:34px;border:1px solid var(--line);border-radius:10px;background:#101827;color:#fff;padding:0 9px;font-size:8px}
+.cards{display:flex;gap:7px;overflow-x:auto;height:112px}.card{flex:0 0 140px;text-align:left;padding:8px;border:1px solid #ffffff17;border-radius:12px;background:linear-gradient(160deg,#18243c,#0b111c);color:#fff}.card.sel{border-color:var(--cyan);box-shadow:0 0 0 1px #64eaff44 inset}.card b{display:block;font-size:10px;margin-bottom:4px}.card span{display:block;font-size:7px;color:#aab6c9}.card .stat{color:#fff;font-weight:850}
+.bottom{position:absolute;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));display:flex;gap:6px;padding:7px;border:1px solid var(--line);border-radius:16px;background:#07101bdd;backdrop-filter:blur(17px)}.bottom .btn{flex:1;height:44px;padding:0 8px}
+.help{position:fixed;inset:0;z-index:5;display:none;place-items:center;background:#02040aec;padding:16px}.help.show{display:grid}.help .panel{width:min(520px,94vw);border:1px solid var(--line);border-radius:20px;background:#0a111d;padding:18px}.help h3{margin:0 0 8px}.help p{font-size:10px;color:#aab6c9;line-height:1.55}
+@media(max-width:600px){.brand small{display:none}.actions .btn{padding:8px}.drawer{height:150px;bottom:84px}.cards{height:98px}.card{flex-basis:128px}.bottom .btn{font-size:7px}.status{top:112px}}
 </style>
 </head>
 <body>
-<video id="cam" autoplay muted playsinline></video><div id="app"></div>
+<video id="cam" autoplay muted playsinline webkit-playsinline></video>
+<canvas id="fx"></canvas>
 <div class="ui">
- <div class="top"><div class="brand"><div class="logo"></div><div><b>NEXUS DUEL</b><small>Universal 3D • Kamera • WebXR</small></div></div><div class="actions"><button id="mode3d" class="btn primary">3D OYNA</button><button id="camera" class="btn">📷 KAMERA</button><button id="ar" class="btn">AR</button><button id="vr" class="btn">VR</button></div></div>
- <div class="hud"><div class="lp"><small>SEN • LP</small><b id="plp">8000</b><div class="bar"><i id="pb"></i></div></div><div class="turn"><small id="who">SENİN TURUN</small><b id="phase">MAIN PHASE</b><span id="turnNo">TUR 1</span></div><div class="lp r"><small>RAKİP • LP</small><b id="elp">8000</b><div class="bar"><i id="eb"></i></div></div></div>
- <div class="tip" id="tip">Her yerde çalışır: 3D OYNA ile başla. Kamera ve AR isteğe bağlı.</div>
- <section class="info" id="info"></section>
- <section class="library" id="library"><div class="tools"><input id="search" placeholder="Canavar ara..."><select id="filter"><option value="">Tümü</option></select></div><div class="cards" id="cards"></div></section>
- <div class="mobileTabs"><button id="tabInfo" class="btn primary">DETAY</button><button id="tabLib" class="btn">KARTLAR</button></div>
- <div class="dock"><button id="summon" class="btn primary">ÇAĞIR</button><button id="battle" class="btn">BATTLE</button><button id="attack" class="btn danger">SALDIR</button><button id="end" class="btn">TURU BİTİR</button><button id="atlasBtn" class="btn">ATLAS</button><button id="typesBtn" class="btn">TÜRLER</button><button id="vrExit" class="btn" style="display:none">VR ÇIK</button></div>
+ <div class="top">
+   <div class="brand"><div class="logo"></div><div><b>NEXUS DUEL</b><small>Camera-first AR Lite</small></div></div>
+   <div class="actions"><button id="cameraBtn" class="btn primary">📷 KAMERA</button><button id="helpBtn" class="btn">?</button></div>
+ </div>
+ <div class="hud">
+   <div class="box"><small>SEN • LP</small><b id="plp">8000</b><div class="bar"><i id="pb"></i></div></div>
+   <div class="box turn"><small id="who">SENİN TURUN</small><b id="phase">MAIN PHASE</b></div>
+   <div class="box r"><small>RAKİP • LP</small><b id="elp">8000</b><div class="bar"><i id="eb"></i></div></div>
+ </div>
+ <div class="status" id="status">Önce KAMERA'ya bas. Kamera izni gelince İZİN VER.</div>
+ <div class="drawer"><div class="tools"><input id="search" placeholder="Canavar ara..."></div><div class="cards" id="cards"></div></div>
+ <div class="bottom"><button id="summon" class="btn primary">ÇAĞIR</button><button id="battle" class="btn">BATTLE</button><button id="attack" class="btn danger">SALDIR</button><button id="end" class="btn">TURU BİTİR</button></div>
 </div>
-<div id="atlasModal" class="modal hidden"><div class="modalBox"><div class="modalHead"><b>Canavar Atlası</b><button data-close="atlasModal" class="btn">KAPAT</button></div><img alt="Monster atlas" src="https://raw.githubusercontent.com/ramiz28615/niceapp/main/atlas.jpg" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<p style=&quot;color:#9eabc0&quot;>Atlas görseli ayrı dosya olarak yüklenmemiş. Oyun çalışmaya devam eder.</p>')"></div></div>
-<div id="typesModal" class="modal hidden"><div class="modalBox"><div class="modalHead"><b>Canavar Türleri</b><button data-close="typesModal" class="btn">KAPAT</button></div><div class="typeGrid" id="typeGrid"></div></div></div>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
-<script type="module">
-import * as THREE from "three";
-const data=[
-["Dark Magician","Spellcaster / Normal","DARK","7",2500,2100,"Yugi Muto / Atem","Büyü desteğiyle kontrol ve kombinasyon."],
-["Dark Magician Girl","Spellcaster / Effect","DARK","6",2000,1700,"Yugi Muto / Atem","Dark Magician destesinin ikonik destek canavarı."],
-["Blue-Eyes White Dragon","Dragon / Normal","LIGHT","8",3000,2500,"Seto Kaiba","Çok yüksek temel saldırı gücü."],
-["Blue-Eyes Ultimate Dragon","Dragon / Fusion","LIGHT","12",4500,3800,"Seto Kaiba","3 Blue-Eyes birleşimiyle yüksek ham güç."],
-["Red-Eyes Black Dragon","Dragon / Normal","DARK","7",2400,2000,"Joey Wheeler","Fusion ve burn odaklı ejderha."],
-["Exodia the Forbidden One","Spellcaster / Effect","DARK","-",1000,1000,"Yugi","5 parça eldeyse özel kazanma koşulu."],
-["Slifer the Sky Dragon","Divine-Beast / Effect","DIVINE","10","Değişken","Değişken","Yugi / Atem","Eldeki kart sayısına göre güçlenir."],
-["Obelisk the Tormentor","Divine-Beast / Effect","DIVINE","10",4000,4000,"Seto Kaiba","Çok yüksek ham güç."],
-["The Winged Dragon of Ra","Divine-Beast / Effect","DIVINE","10","Değişken","Değişken","Marik / Atem","LP ve kurban mekanikleriyle güçlenir."],
-["Elemental HERO Flame Wingman","Warrior / Fusion","WIND","6",2100,1200,"Jaden Yuki","Savaşta yok ettiği canavardan ek hasar."],
-["Elemental HERO Neos","Warrior / Normal","LIGHT","7",2500,2000,"Jaden Yuki","Neo-Spacian ile Contact Fusion."],
-["Cyber End Dragon","Machine / Fusion","LIGHT","10",4000,2800,"Zane Truesdale","Piercing battle damage."],
-["Stardust Dragon","Dragon / Synchro / Effect","WIND","8",2500,2000,"Yusei Fudo","Yok etme efektlerine karşı savunma."],
-["Red Dragon Archfiend","Dragon / Synchro / Effect","DARK","8",3000,2000,"Jack Atlas","Savunma pozisyonundaki canavarları baskılar."],
-["Black Rose Dragon","Dragon / Synchro / Effect","FIRE","7",2400,1800,"Akiza Izinski","Sahayı temizleyebilen Synchro etkisi."],
-["Number 39: Utopia","Warrior / Xyz / Effect","LIGHT","Rank 4",2500,2000,"Yuma Tsukumo","Xyz Material ile saldırı engelleme."],
-["Number 17: Leviathan Dragon","Dragon / Xyz / Effect","WATER","Rank 3",2000,0,"Yuma","Material kullanarak ATK yükseltebilir."],
-["Odd-Eyes Pendulum Dragon","Dragon / Pendulum / Effect","DARK","7",2500,2000,"Yuya Sakaki","Pendulum sisteminin ikonik ejderhası."],
-["Dark Rebellion Xyz Dragon","Dragon / Xyz / Effect","DARK","Rank 4",2500,2000,"Yuto","Rakibin ATK'ını düşürüp kendi gücünü artırabilir."],
-["Clear Wing Synchro Dragon","Dragon / Synchro / Effect","WIND","7",2500,2000,"Yugo","Canavar efektlerine karşı güçlü savunma."],
-["Starving Venom Fusion Dragon","Dragon / Fusion / Effect","DARK","8",2800,2000,"Yuri","Rakip canavar gücü ve efektlerini kullanabilir."],
-["Decode Talker","Cyberse / Link / Effect","DARK","Link 3",2300,"Yok","Playmaker","Link oklarından güç kazanır."],
-["Firewall Dragon","Cyberse / Link / Effect","LIGHT","Link 4",2500,"Yok","Playmaker","Cyberse Link kombinasyonlarının ana kartlarından."],
-["Borreload Dragon","Dragon / Link / Effect","DARK","Link 4",3000,"Yok","Revolver","Rakip canavar kontrolü üzerinde baskı kurar."]
-].map(x=>({name:x[0],type:x[1],attribute:x[2],level:x[3],atk:x[4],def:x[5],owner:x[6],effect:x[7]}));
-const typeData=[["Normal","Özel efekti yok; temel ATK/DEF."],["Effect","Koşullu özel efektler."],["Ritual","Ritual Spell ile çağrılır."],["Fusion","Birden fazla materyal birleşir."],["Synchro","Tuner + Tuner olmayan seviyeleri."],["Xyz","Aynı seviyeli canavarlar ve Material."],["Pendulum","Pendulum Scale ile çoklu çağrı."],["Link","DEF ve Level yok; Link Rating kullanır."]];
+<div id="help" class="help"><div class="panel"><h3>Kamera açılmıyorsa</h3><p>Chrome'da adres çubuğunun solundaki site simgesine bas → Site ayarları → Kamera → İzin ver. Sonra sayfayı yenile. Kamera başka uygulamada açıksa onu kapat.</p><button id="closeHelp" class="btn primary">TAMAM</button></div></div>
+<script>
+(()=>{
+"use strict";
 const $=id=>document.getElementById(id);
-let selected=0,mode="3d",battle=false,turn=1,plp=8000,elp=8000,isAR=false,isVR=false,stereo=false,hitSource=null,hitRequested=false,lastHit=new THREE.Matrix4(),camStream=null;
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x05070b);const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.02,100);camera.position.set(0,1.65,4.8);camera.lookAt(0,.65,-1.2);
-const renderer=new THREE.WebGLRenderer({antialias:false,alpha:true,powerPreference:"high-performance"});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));renderer.xr.enabled=true;$("app").appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xffffff,0x171226,2));const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(3,7,3);scene.add(sun);
-const arena=new THREE.Group();scene.add(arena);const floor=new THREE.Mesh(new THREE.CircleGeometry(2.8,48).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({color:0x08121d,transparent:true,opacity:.42,metalness:.25,roughness:.65}));arena.add(floor);arena.position.set(0,0,-1.2);
-const pSlots=[],eSlots=[];function mkSlot(x,z,enemy){const r=new THREE.Mesh(new THREE.RingGeometry(.38,.42,32).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:enemy?0xff815d:0x64eaff,transparent:true,opacity:.55}));r.position.set(x,.01,z);arena.add(r);(enemy?eSlots:pSlots).push({p:new THREE.Vector3(x,.03,z),m:null})}[-1.3,0,1.3].forEach(x=>{mkSlot(x,.95,false);mkSlot(x,-.95,true)});
-const ret=new THREE.Mesh(new THREE.RingGeometry(.08,.12,32).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x64eaff}));ret.matrixAutoUpdate=false;ret.visible=false;scene.add(ret);
-const color=a=>({LIGHT:0xeef9ff,DARK:0x7658ff,FIRE:0xff6848,WIND:0x5fe8be,WATER:0x4b9dff,DIVINE:0xffd05a}[a]||0x64eaff);
-function num(v){return typeof v==="number"?v:2500}
-function monster(c,enemy=false){const g=new THREE.Group();g.userData={c,enemy,attacked:false};const col=color(c.attribute),m=new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.28,metalness:.48,roughness:.35});const body=new THREE.Mesh(new THREE.CapsuleGeometry(.22,.7,4,8),m);body.position.y=.7;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.18,12,8),new THREE.MeshStandardMaterial({color:0xffffff,emissive:col,emissiveIntensity:.2}));head.position.y=1.28;g.add(head);const aura=new THREE.Mesh(new THREE.TorusGeometry(.4,.025,6,28),new THREE.MeshBasicMaterial({color:col}));aura.rotation.x=Math.PI/2;aura.position.y=.28;aura.userData.spin=1;g.add(aura);return g}
-function spawn(enemy=false){const slots=enemy?eSlots:pSlots,z=slots.find(s=>!s.m);if(!z)return tip("Boş alan yok");const c=enemy?data[Math.floor(Math.random()*data.length)]:data[selected],g=monster(c,enemy);g.position.copy(z.p);g.scale.setScalar(.01);arena.add(g);z.m=g;g.userData.slot=z;let s=0;g.userData.tick=()=>{s=Math.min(1,s+.08);g.scale.setScalar(THREE.MathUtils.smoothstep(s,0,1));g.rotation.y+=(1-s)*.18;if(s>=1)delete g.userData.tick};tip(c.name+" çağrıldı")}
-function tip(s){$("tip").textContent=s}
-function hud(){$("plp").textContent=Math.max(0,plp);$("elp").textContent=Math.max(0,elp);$("pb").style.width=Math.max(0,plp/80)+"%";$("eb").style.width=Math.max(0,elp/80)+"%";$("turnNo").textContent="TUR "+turn}
-function attack(){if(!battle)return tip("Önce BATTLE'a geç");const a=pSlots.find(s=>s.m&&!s.m.userData.attacked)?.m;if(!a)return tip("Saldırabilecek canavar yok");const d=eSlots.find(s=>s.m)?.m;a.userData.attacked=true;if(!d){elp-=num(a.userData.c.atk);tip("Doğrudan "+num(a.userData.c.atk)+" hasar");hud();return endCheck()}const av=num(a.userData.c.atk),dv=num(d.userData.c.atk);if(av>=dv){elp-=Math.max(0,av-dv);arena.remove(d);d.userData.slot.m=null;tip("Rakip canavar yok edildi")}else{plp-=dv-av;arena.remove(a);a.userData.slot.m=null;tip("Karşı hasar "+(dv-av))}hud();endCheck()}
-function endCheck(){if(elp<=0){tip("🏆 KAZANDIN");setTimeout(reset,1200)}else if(plp<=0){tip("💀 KAYBETTİN");setTimeout(reset,1200)}}
-function reset(){[...pSlots,...eSlots].forEach(s=>{if(s.m)arena.remove(s.m);s.m=null});plp=elp=8000;turn=1;battle=false;$("phase").textContent="MAIN PHASE";hud();spawn(false);setTimeout(()=>spawn(true),250)}
-function endTurn(){battle=false;$("who").textContent="RAKİP TURU";$("phase").textContent="BATTLE PHASE";spawn(true);setTimeout(()=>{const a=eSlots.find(s=>s.m),d=pSlots.find(s=>s.m);if(a){if(d){const diff=num(a.m.userData.c.atk)-num(d.m.userData.c.atk);if(diff>=0){plp-=diff;arena.remove(d.m);d.m=null}else{elp-=Math.abs(diff);arena.remove(a.m);a.m=null}}else plp-=num(a.m.userData.c.atk)}hud();endCheck();turn++;pSlots.forEach(s=>{if(s.m)s.m.userData.attacked=false});$("who").textContent="SENİN TURUN";$("phase").textContent="MAIN PHASE";hud()},650)}
-function renderInfo(){const c=data[selected];$("info").innerHTML="<h2>"+c.name+"</h2><span class='tag'>"+c.type+"</span><div class='row'><div class='metric'><small>ATTRIBUTE</small><b>"+c.attribute+"</b></div><div class='metric'><small>LEVEL/RANK/LINK</small><b>"+c.level+"</b></div><div class='metric'><small>ATK</small><b>"+c.atk+"</b></div><div class='metric'><small>DEF</small><b>"+c.def+"</b></div></div><p><b>Kullanıcı:</b> "+(c.owner||"-")+"</p><p><b>Özellik:</b> "+c.effect+"</p><div class='detailActions'><button id='infoSummon' class='btn primary'>3B ÇAĞIR</button></div>";$("infoSummon").onclick=()=>spawn(false)}
-function renderCards(){const q=$("search").value.toLowerCase(),f=$("filter").value,box=$("cards");box.innerHTML="";data.forEach((c,i)=>{if(q&&!c.name.toLowerCase().includes(q))return;if(f&&!c.type.includes(f))return;const b=document.createElement("button");b.className="card"+(i===selected?" sel":"");b.innerHTML="<b>"+c.name+"</b><span>"+c.attribute+" • "+c.type+"</span><span class='stat'>ATK "+c.atk+" / DEF "+c.def+"</span>";b.onclick=()=>{selected=i;renderCards();renderInfo()};box.appendChild(b)})}
-["Normal","Effect","Fusion","Synchro","Xyz","Pendulum","Link","Divine"].forEach(t=>$("filter").insertAdjacentHTML("beforeend","<option>"+t+"</option>"));$("search").oninput=renderCards;$("filter").onchange=renderCards;
-$("summon").onclick=()=>spawn(false);$("battle").onclick=()=>{battle=true;$("phase").textContent="BATTLE PHASE";tip("Saldırı yapabilirsin")};$("attack").onclick=attack;$("end").onclick=endTurn;$("mode3d").onclick=async()=>{const s=renderer.xr.getSession();if(s)try{await s.end()}catch{};stereo=false;isVR=false;$("vrExit").style.display="none";if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}$("cam").style.display="none";mode="3d";scene.background=new THREE.Color(0x05070b);arena.position.set(0,0,-1.2);camera.position.set(0,1.65,4.8);yaw=0;pitch=-.18;tip("3D mod aktif — kamera/AR gerekmez")};
-$("camera").onclick=async()=>{
+const cards=[
+["Dark Magician",2500,2100,"#7658ff","🧙"],["Blue-Eyes White Dragon",3000,2500,"#eaf8ff","🐉"],["Red-Eyes Black Dragon",2400,2000,"#a83955","🐲"],["Exodia",1000,1000,"#ffc95f","🗿"],["Slifer",3000,3000,"#ff5f7f","🐍"],["Obelisk",4000,4000,"#5a7dff","🗿"],["Ra",4000,4000,"#ffd75a","🦅"],["Stardust Dragon",2500,2000,"#67efbc","✨"],["Utopia",2500,2000,"#f2f7ff","⚔️"],["Odd-Eyes",2500,2000,"#9b7fff","👁️"],["Firewall Dragon",2500,0,"#64eaff","🔷"],["Borreload Dragon",3000,0,"#8d65ff","🐉"]
+].map(x=>({name:x[0],atk:x[1],def:x[2],color:x[3],icon:x[4]}));
+let selected=0,camStream=null,battle=false,plp=8000,elp=8000,turn=1;
+const ctx=$("fx").getContext("2d"), monsters=[];
+function resize(){const dpr=Math.min(devicePixelRatio||1,1.5),w=innerWidth,h=innerHeight;$("fx").width=Math.round(w*dpr);$("fx").height=Math.round(h*dpr);$("fx").style.width=w+"px";$("fx").style.height=h+"px";ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener("resize",resize);resize();
+function status(s){$("status").textContent=s}
+function hud(){$("plp").textContent=Math.max(0,plp);$("elp").textContent=Math.max(0,elp);$("pb").style.width=Math.max(0,plp/80)+"%";$("eb").style.width=Math.max(0,elp/80)+"%"}
+function renderCards(){const q=$("search").value.toLowerCase(),box=$("cards");box.innerHTML="";cards.forEach((c,i)=>{if(q&&!c.name.toLowerCase().includes(q))return;const b=document.createElement("button");b.className="card"+(i===selected?" sel":"");b.innerHTML="<b>"+c.icon+" "+c.name+"</b><span class='stat'>ATK "+c.atk+" / DEF "+c.def+"</span><span>3B AR Lite summon</span>";b.onclick=()=>{selected=i;renderCards();status(c.name+" seçildi")};box.appendChild(b)})}
+$("search").oninput=renderCards;renderCards();hud();
+async function openCamera(){
  const v=$("cam");
  try{
-   const xr=renderer.xr.getSession();if(xr)try{await xr.end()}catch{}
-   if(camStream){
-     camStream.getTracks().forEach(t=>t.stop());camStream=null;v.srcObject=null;v.pause();v.style.display="none";
-     scene.background=new THREE.Color(0x05070b);mode="3d";tip("Kamera kapandı");return;
-   }
-   if(!window.isSecureContext)throw Object.assign(new Error("HTTPS gerekli"),{name:"InsecureContext"});
-   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw Object.assign(new Error("Tarayıcı getUserMedia desteklemiyor"),{name:"Unsupported"});
-   v.setAttribute("autoplay","");v.setAttribute("muted","");v.setAttribute("playsinline","");v.setAttribute("webkit-playsinline","");
-   v.muted=true;v.autoplay=true;v.playsInline=true;v.style.display="block";
-   let stream=null;
+   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;v.srcObject=null;v.style.display="none";status("Kamera kapandı");$("cameraBtn").textContent="📷 KAMERA";return}
+   if(!window.isSecureContext)throw new Error("HTTPS gerekli");
+   if(!navigator.mediaDevices?.getUserMedia)throw new Error("Bu tarayıcı kamera API'sini desteklemiyor");
+   status("Kamera izni bekleniyor...");
+   let stream=null,lastErr=null;
    const attempts=[
      {video:{facingMode:{exact:"environment"}},audio:false},
-     {video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false},
+     {video:{facingMode:{ideal:"environment"}},audio:false},
      {video:true,audio:false}
    ];
-   let lastErr=null;
-   for(const constraints of attempts){
-     try{stream=await navigator.mediaDevices.getUserMedia(constraints);break}catch(err){lastErr=err}
-   }
-   if(!stream)throw lastErr||new Error("Kamera akışı alınamadı");
-   camStream=stream;v.srcObject=stream;
-   await new Promise((resolve,reject)=>{
-     if(v.readyState>=1)return resolve();
-     const to=setTimeout(()=>reject(new Error("Kamera zaman aşımı")),5000);
-     v.onloadedmetadata=()=>{clearTimeout(to);resolve()};
-   });
+   for(const c of attempts){try{stream=await navigator.mediaDevices.getUserMedia(c);break}catch(e){lastErr=e}}
+   if(!stream)throw lastErr||new Error("Kamera alınamadı");
+   camStream=stream;v.srcObject=stream;v.style.display="block";v.muted=true;v.playsInline=true;
    await v.play();
-   renderer.setClearColor(0x000000,0);scene.background=null;mode="camera";
-   const track=stream.getVideoTracks()[0],settings=track?.getSettings?.()||{};
-   tip("Kamera açık"+(settings.facingMode?" • "+settings.facingMode:"")+" — 3B sahne kameranın üstünde");
+   $("cameraBtn").textContent="KAMERAYI KAPAT";
+   const s=stream.getVideoTracks()[0]?.getSettings?.()||{};
+   status("Kamera açık"+(s.facingMode?" • "+s.facingMode:"")+" • ÇAĞIR ile canavar ekle");
  }catch(e){
-   console.error("Camera error",e);
-   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}
-   v.srcObject=null;v.style.display="none";scene.background=new THREE.Color(0x05070b);
-   const n=e?.name||"Hata";
-   let msg="Kamera açılamadı: "+n;
-   if(n==="NotAllowedError")msg="Kamera izni reddedildi. Adres çubuğu > Site ayarları > Kamera > İzin ver, sonra yenile.";
-   else if(n==="NotFoundError")msg="Bu cihazda kullanılabilir kamera bulunamadı.";
-   else if(n==="NotReadableError")msg="Kamera başka uygulama tarafından kullanılıyor olabilir. Diğer kamera uygulamalarını kapat.";
-   else if(n==="InsecureContext")msg="Kamera için HTTPS gerekiyor.";
-   else if(n==="Unsupported")msg="Bu tarayıcı kamera API'sini desteklemiyor. Chrome ile aç.";
-   else if(n==="OverconstrainedError")msg="Arka kamera seçilemedi; sayfayı yenileyip tekrar dene.";
-   tip(msg);
+   console.error(e);
+   const n=e?.name||"";
+   if(n==="NotAllowedError")status("Kamera izni reddedildi → Site ayarları > Kamera > İzin ver");
+   else if(n==="NotReadableError")status("Kamera başka uygulamada kullanılıyor. Diğer kamera uygulamalarını kapat.");
+   else if(n==="NotFoundError")status("Kamera bulunamadı.");
+   else status("Kamera açılamadı: "+(e?.message||n||"bilinmeyen hata"));
  }
-};
-async function startAR(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;$("cam").srcObject=null;$("cam").style.display="none"}if(!navigator.xr){tip("Gerçek WebXR yok → kamera tabanlı AR Lite açılıyor");await $("camera").onclick();return}const ok=await navigator.xr.isSessionSupported("immersive-ar").catch(()=>false);if(!ok){tip("Gerçek AR desteklenmiyor → kamera tabanlı AR Lite açılıyor");await $("camera").onclick();return}try{const s=await navigator.xr.requestSession("immersive-ar",{requiredFeatures:["hit-test"],optionalFeatures:["dom-overlay","local-floor"],domOverlay:{root:document.body}});await renderer.xr.setSession(s)}catch(e){tip("WebXR AR açılamadı → kamera tabanlı AR Lite açılıyor");await $("camera").onclick()}}
-$("ar").onclick=startAR;$("vr").onclick=async()=>{if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;$("cam").srcObject=null;$("cam").style.display="none"}if(navigator.xr&&await navigator.xr.isSessionSupported("immersive-vr").catch(()=>false)){try{const s=await navigator.xr.requestSession("immersive-vr",{optionalFeatures:["local-floor"]});await renderer.xr.setSession(s);return}catch(e){}}stereo=true;$("vrExit").style.display="inline-block";scene.background=new THREE.Color(0x05070b);tip("VR fallback aktif — ekran iki göze bölündü")};$("vrExit").onclick=()=>{stereo=false;$("vrExit").style.display="none";$("mode3d").click()};renderer.xr.addEventListener("sessionstart",()=>{const s=renderer.xr.getSession();isAR=s?.mode==="immersive-ar";isVR=s?.mode==="immersive-vr";scene.background=null;tip(isAR?"Gerçek WebXR AR aktif — telefonu yüzeye doğru hareket ettir":"Gerçek WebXR VR aktif")});renderer.xr.addEventListener("sessionend",()=>{isAR=false;isVR=false;hitSource=null;hitRequested=false;ret.visible=false;if(!camStream)scene.background=new THREE.Color(0x05070b)});
-function updateXR(frame){if(!isAR||!frame)return;const session=renderer.xr.getSession(),ref=renderer.xr.getReferenceSpace();if(!hitRequested){session.requestReferenceSpace("viewer").then(v=>session.requestHitTestSource({space:v}).then(src=>hitSource=src));hitRequested=true}if(hitSource){const h=frame.getHitTestResults(hitSource);if(h.length){const pose=h[0].getPose(ref);ret.visible=true;ret.matrix.fromArray(pose.transform.matrix);lastHit.copy(ret.matrix);const p=new THREE.Vector3(),q=new THREE.Quaternion(),s=new THREE.Vector3();lastHit.decompose(p,q,s);arena.position.lerp(p,.08);arena.quaternion.slerp(q,.08)}else ret.visible=false}}
-$("atlasBtn").onclick=()=>$("atlasModal").classList.remove("hidden");$("typesBtn").onclick=()=>$("typesModal").classList.remove("hidden");document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=$(b.dataset.close).classList.add("hidden"));$("typeGrid").innerHTML=typeData.map(t=>"<div class='typeCard'><b>"+t[0]+"</b><p style='font-size:8px;color:#9eabc0'>"+t[1]+"</p></div>").join("");
-$("tabInfo").onclick=()=>{$("info").classList.remove("hide");$("library").classList.remove("show");$("tabInfo").classList.add("primary");$("tabLib").classList.remove("primary")};$("tabLib").onclick=()=>{$("info").classList.add("hide");$("library").classList.add("show");$("tabLib").classList.add("primary");$("tabInfo").classList.remove("primary")};
-let dragging=false,lastX=0,lastY=0,yaw=0,pitch=-.18;renderer.domElement.addEventListener("pointerdown",e=>{if(isAR||isVR)return;dragging=true;lastX=e.clientX;lastY=e.clientY});addEventListener("pointerup",()=>dragging=false);addEventListener("pointermove",e=>{if(!dragging||isAR||isVR)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;yaw-=dx*.003;pitch=Math.max(-.65,Math.min(.45,pitch-dy*.0025))});
-const clock=new THREE.Clock(),leftCam=new THREE.PerspectiveCamera(),rightCam=new THREE.PerspectiveCamera();renderer.setAnimationLoop((t,f)=>{const dt=Math.min(clock.getDelta(),.033);if(!isAR&&!isVR){camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch}updateXR(f);[...pSlots,...eSlots].forEach(s=>{if(s.m){s.m.children.forEach(c=>{if(c.userData.spin)c.rotation.z+=dt});if(s.m.userData.tick)s.m.userData.tick();s.m.position.y=.03+Math.sin(t*.002+s.m.id)*.015}});if(stereo&&!renderer.xr.isPresenting){const w=innerWidth,h=innerHeight;renderer.setScissorTest(true);leftCam.copy(camera);rightCam.copy(camera);leftCam.aspect=(w/2)/h;rightCam.aspect=(w/2)/h;leftCam.updateProjectionMatrix();rightCam.updateProjectionMatrix();leftCam.translateX(-.035);rightCam.translateX(.035);renderer.setViewport(0,0,w/2,h);renderer.setScissor(0,0,w/2,h);renderer.render(scene,leftCam);renderer.setViewport(w/2,0,w/2,h);renderer.setScissor(w/2,0,w/2,h);renderer.render(scene,rightCam);renderer.setScissorTest(false);renderer.setViewport(0,0,w,h)}else renderer.render(scene,camera)});
-addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight,false)});renderCards();renderInfo();hud();yaw=0;pitch=-.18;camera.position.set(0,1.65,4.8);spawn(false);setTimeout(()=>spawn(true),300);setTimeout(()=>tip("Hazır — 3D çalışır. Kamera/AR desteklenirse ayrıca açılır."),700);
+}
+$("cameraBtn").onclick=openCamera;
+$("helpBtn").onclick=()=>$("help").classList.add("show");$("closeHelp").onclick=()=>$("help").classList.remove("show");
+function summon(enemy=false){const c=enemy?cards[Math.floor(Math.random()*cards.length)]:cards[selected];monsters.push({c,enemy,x:enemy?innerWidth*.65:innerWidth*.35,y:innerHeight*.48,scale:.1,alpha:1,dead:false,attacked:false,phase:Math.random()*6.28});status(c.name+" çağrıldı")}
+$("summon").onclick=()=>summon(false);
+$("battle").onclick=()=>{battle=true;$("phase").textContent="BATTLE PHASE";status("Saldırı hazır")};
+$("attack").onclick=()=>{if(!battle)return status("Önce BATTLE'a geç");const a=monsters.find(m=>!m.enemy&&!m.dead&&!m.attacked);if(!a)return status("Saldırabilecek canavar yok");a.attacked=true;const d=monsters.find(m=>m.enemy&&!m.dead);if(!d){elp-=a.c.atk;status("Doğrudan "+a.c.atk+" hasar");hud();return}a.punch=1;setTimeout(()=>{if(a.c.atk>=d.c.atk){elp-=Math.max(0,a.c.atk-d.c.atk);d.dead=true;status("Rakip canavar yok edildi")}else{plp-=d.c.atk-a.c.atk;a.dead=true;status("Karşı hasar "+(d.c.atk-a.c.atk))}hud()},320)};
+$("end").onclick=()=>{battle=false;$("phase").textContent="MAIN PHASE";$("who").textContent="RAKİP TURU";summon(true);setTimeout(()=>{const a=monsters.find(m=>m.enemy&&!m.dead),d=monsters.find(m=>!m.enemy&&!m.dead);if(a){if(d&&a.c.atk>=d.c.atk){plp-=a.c.atk-d.c.atk;d.dead=true}else if(!d)plp-=a.c.atk}turn++;monsters.forEach(m=>m.attacked=false);$("who").textContent="SENİN TURUN";hud();status("Tur "+turn)},650)};
+function drawMonster(m,t){
+ if(m.dead){m.alpha-=.035;m.scale*=.96;if(m.alpha<=0)return}
+ m.scale=Math.min(1,m.scale+.05);const bob=Math.sin(t*.002+m.phase)*7,base=m.enemy?110:125,s=base*m.scale;
+ let x=m.x,y=m.y+bob;if(m.punch){x+=(m.enemy?-1:1)*Math.sin((1-m.punch)*Math.PI)*80;m.punch-=.045;if(m.punch<=0)m.punch=0}
+ ctx.save();ctx.globalAlpha=Math.max(0,m.alpha);ctx.translate(x,y);ctx.scale(m.enemy?-1:1,1);
+ ctx.shadowBlur=30;ctx.shadowColor=m.c.color;ctx.strokeStyle=m.c.color;ctx.lineWidth=3;ctx.fillStyle="rgba(5,10,18,.72)";
+ ctx.beginPath();ctx.ellipse(0,s*.48,s*.34,s*.09,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle=m.c.color;ctx.globalAlpha*=.9;ctx.beginPath();ctx.moveTo(0,-s*.55);ctx.lineTo(s*.20,-s*.08);ctx.lineTo(s*.14,s*.34);ctx.lineTo(-s*.14,s*.34);ctx.lineTo(-s*.20,-s*.08);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#eef7ff";ctx.beginPath();ctx.arc(0,-s*.64,s*.10,0,Math.PI*2);ctx.fill();
+ ctx.font=Math.round(s*.24)+"px system-ui";ctx.textAlign="center";ctx.fillText(m.c.icon,0,-s*.15);
+ ctx.font="700 11px system-ui";ctx.fillStyle="#fff";ctx.fillText(m.c.name,0,s*.62);ctx.font="9px system-ui";ctx.fillStyle="#c9d4e6";ctx.fillText("ATK "+m.c.atk,0,s*.74);
+ ctx.restore();
+}
+function loop(t){ctx.clearRect(0,0,innerWidth,innerHeight);monsters.forEach(m=>drawMonster(m,t));requestAnimationFrame(loop)}
+requestAnimationFrame(loop);summon(false);setTimeout(()=>summon(true),250);
+})();
 </script>
-</body></html>
+</body>
+</html>
