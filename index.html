@@ -2,118 +2,41 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#05070b">
-<title>NEXUS DUEL AR — Camera First</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08160d">
+<title>Çelikhan Çay Evi • Menü</title>
+<link rel="preconnect" href="https://images.unsplash.com">
 <style>
-:root{--bg:#05070b;--panel:rgba(8,13,23,.88);--line:rgba(255,255,255,.12);--text:#f7f9ff;--muted:#90a0ba;--cyan:#64eaff;--violet:#9b7fff;--pink:#ff66c7;--red:#ff5f7f;--green:#67efbc}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}button,input{font:inherit}
-#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:0;display:none}
-#fx{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
-.ui{position:fixed;inset:0;z-index:2;pointer-events:none}
-.top,.hud,.bottom,.drawer,.status{pointer-events:auto}
-.top{position:absolute;left:0;right:0;top:0;padding:max(10px,env(safe-area-inset-top)) 10px 0;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.brand{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:9px 11px;backdrop-filter:blur(16px)}
-.logo{width:34px;height:34px;border-radius:11px;border:1px solid #ffffff22;background:linear-gradient(145deg,#64eaff33,#9b7fff33);position:relative}.logo:after{content:"";position:absolute;inset:8px;border:2px solid var(--cyan);border-radius:4px;transform:rotate(45deg);box-shadow:0 0 14px #64eaff77}
-.brand b{font-size:11px;letter-spacing:.08em}.brand small{display:block;font-size:7px;color:var(--muted);margin-top:2px}
-.actions{display:flex;gap:5px}
-.btn{border:1px solid var(--line);background:#0a111ddd;color:#fff;border-radius:12px;padding:10px 11px;font-size:8px;font-weight:850;backdrop-filter:blur(14px}.primary{border:0;color:#061014;background:linear-gradient(135deg,var(--cyan),#aab8ff)}.danger{border:0;background:linear-gradient(135deg,var(--red),var(--pink))}
-.hud{position:absolute;top:64px;left:10px;right:10px;display:grid;grid-template-columns:1fr auto 1fr;gap:7px}.box{padding:7px 9px;border:1px solid var(--line);border-radius:13px;background:var(--panel);backdrop-filter:blur(15px)}.box.r{text-align:right}.box small{display:block;font-size:6px;color:#7f8fa9;letter-spacing:.14em}.box b{font-size:18px}.turn{text-align:center;min-width:95px}.turn b{display:block;font-size:8px;color:#d8faff}.bar{height:3px;background:#ffffff18;border-radius:8px;overflow:hidden;margin-top:3px}.bar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--green),var(--cyan))}
-.r .bar i{margin-left:auto;background:linear-gradient(90deg,#ff9d54,var(--red))}
-.status{position:absolute;top:118px;left:50%;transform:translateX(-50%);max-width:90vw;padding:7px 10px;border:1px solid #ffffff14;border-radius:16px;background:#050810c7;color:#b8c7da;font-size:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.drawer{position:absolute;left:8px;right:8px;bottom:88px;height:166px;border:1px solid var(--line);border-radius:18px;background:var(--panel);backdrop-filter:blur(18px);padding:9px}
-.tools{display:flex;gap:6px;margin-bottom:8px}.tools input{width:100%;height:34px;border:1px solid var(--line);border-radius:10px;background:#101827;color:#fff;padding:0 9px;font-size:8px}
-.cards{display:flex;gap:7px;overflow-x:auto;height:112px}.card{flex:0 0 140px;text-align:left;padding:8px;border:1px solid #ffffff17;border-radius:12px;background:linear-gradient(160deg,#18243c,#0b111c);color:#fff}.card.sel{border-color:var(--cyan);box-shadow:0 0 0 1px #64eaff44 inset}.card b{display:block;font-size:10px;margin-bottom:4px}.card span{display:block;font-size:7px;color:#aab6c9}.card .stat{color:#fff;font-weight:850}
-.bottom{position:absolute;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));display:flex;gap:6px;padding:7px;border:1px solid var(--line);border-radius:16px;background:#07101bdd;backdrop-filter:blur(17px)}.bottom .btn{flex:1;height:44px;padding:0 8px}
-.help{position:fixed;inset:0;z-index:5;display:none;place-items:center;background:#02040aec;padding:16px}.help.show{display:grid}.help .panel{width:min(520px,94vw);border:1px solid var(--line);border-radius:20px;background:#0a111d;padding:18px}.help h3{margin:0 0 8px}.help p{font-size:10px;color:#aab6c9;line-height:1.55}
-@media(max-width:600px){.brand small{display:none}.actions .btn{padding:8px}.drawer{height:150px;bottom:84px}.cards{height:98px}.card{flex-basis:128px}.bottom .btn{font-size:7px}.status{top:112px}}
+:root{--bg:#f5f7f5;--ink:#112019;--muted:#748178;--green:#0d7f45;--gold:#d5b469;--line:#e0e7e2;--card:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(800px 420px at 0 -8%,rgba(27,154,82,.15),transparent 60%),radial-gradient(700px 400px at 100% 0,rgba(213,180,105,.12),transparent 58%),var(--bg);color:var(--ink)}
+.wrap{max-width:920px;margin:auto;padding:0 16px 50px}
+.hero{margin:0 -16px 22px;padding:28px 18px 25px;background:linear-gradient(135deg,#06140b,#0a2a18);color:#fff;text-align:center;box-shadow:0 14px 38px rgba(0,0,0,.16)}
+.logo{width:72px;height:72px;margin:auto;border-radius:24px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#284a33,#07120c 70%);border:1px solid rgba(213,180,105,.6);color:#e3c27c;font-size:31px;font-weight:900;box-shadow:inset 0 0 0 5px rgba(255,255,255,.025),0 12px 28px rgba(0,0,0,.22)}
+.hero h1{margin:12px 0 4px;font-size:clamp(25px,6vw,40px);letter-spacing:.05em}.hero p{margin:0;color:#c9d7cf;font-size:13px;letter-spacing:.12em}
+.intro{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.intro h2{margin:0;font-size:30px;letter-spacing:-.04em}.badge{background:#e8f7ed;color:#0a7640;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.item{display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:center;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;padding:11px;box-shadow:0 10px 26px rgba(11,42,25,.07)}
+.item img{width:100px;height:88px;object-fit:cover;border-radius:16px;background:#e8eee9}.name{font-size:18px;font-weight:900}.desc{font-size:12px;color:var(--muted);margin-top:4px}.price{font-size:20px;font-weight:950;color:var(--green);white-space:nowrap}.cat{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#96743d;font-weight:900;margin-bottom:4px}
+.qr-section{margin:26px auto 4px;text-align:center;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 12px 30px rgba(11,42,25,.08)}.qr-section h3{margin:0 0 6px;font-size:20px}.qr-section p{margin:0 0 14px;color:var(--muted);font-size:12px}.qr-box{width:230px;max-width:100%;margin:0 auto;background:#fff;padding:12px;border-radius:18px;border:1px solid #e3e9e5}.qr-box img{display:block!important;width:100%!important;height:auto!important;margin:auto;image-rendering:pixelated}.footer{text-align:center;color:#87938d;font-size:12px;padding:30px 0 5px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.item{grid-template-columns:82px 1fr auto;border-radius:18px}.item img{width:82px;height:72px}.hero{padding-top:22px}.logo{width:60px;height:60px;border-radius:20px}.intro h2{font-size:26px}}
 </style>
 </head>
 <body>
-<video id="cam" autoplay muted playsinline webkit-playsinline></video>
-<canvas id="fx"></canvas>
-<div class="ui">
- <div class="top">
-   <div class="brand"><div class="logo"></div><div><b>NEXUS DUEL</b><small>Camera-first AR Lite</small></div></div>
-   <div class="actions"><button id="cameraBtn" class="btn primary">📷 KAMERA</button><button id="helpBtn" class="btn">?</button></div>
- </div>
- <div class="hud">
-   <div class="box"><small>SEN • LP</small><b id="plp">8000</b><div class="bar"><i id="pb"></i></div></div>
-   <div class="box turn"><small id="who">SENİN TURUN</small><b id="phase">MAIN PHASE</b></div>
-   <div class="box r"><small>RAKİP • LP</small><b id="elp">8000</b><div class="bar"><i id="eb"></i></div></div>
- </div>
- <div class="status" id="status">Önce KAMERA'ya bas. Kamera izni gelince İZİN VER.</div>
- <div class="drawer"><div class="tools"><input id="search" placeholder="Canavar ara..."></div><div class="cards" id="cards"></div></div>
- <div class="bottom"><button id="summon" class="btn primary">ÇAĞIR</button><button id="battle" class="btn">BATTLE</button><button id="attack" class="btn danger">SALDIR</button><button id="end" class="btn">TURU BİTİR</button></div>
+<div class="wrap">
+<header class="hero"><div class="logo">Ç</div><h1>ÇELİKHAN ÇAY EVİ</h1><p>MENÜ & GÜNCEL FİYATLAR</p></header>
+<div class="intro"><h2>Menümüz</h2><span class="badge">Fiyatlar Güncel</span></div>
+<section class="grid">
+<article class="item"><img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=420&q=86" alt="Çay"><div><div class="cat">Sıcak</div><div class="name">Çay</div><div class="desc">İnce belli bardakta klasik servis</div></div><div class="price">10 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=420&q=86" alt="Su"><div><div class="cat">Soğuk</div><div class="name">Su</div><div class="desc">Soğuk şişe su</div></div><div class="price">10 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=420&q=86" alt="Türk Kahvesi"><div><div class="cat">Sıcak</div><div class="name">Türk Kahvesi</div><div class="desc">Köpüklü geleneksel servis</div></div><div class="price">30 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=420&q=86" alt="Poğaça"><div><div class="cat">Atıştırmalık</div><div class="name">Poğaça</div><div class="desc">Günlük taze</div></div><div class="price">20 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=420&q=86" alt="Kek Bisküvi"><div><div class="cat">Atıştırmalık</div><div class="name">Kek • Bisküvi</div><div class="desc">Günün çeşidi</div></div><div class="price">20 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=420&q=86" alt="Soda"><div><div class="cat">Soğuk</div><div class="name">Soda</div><div class="desc">Maden suyu</div></div><div class="price">25 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1581636625402-29b2a704ef13?auto=format&fit=crop&w=420&q=86" alt="Kutu İçecek"><div><div class="cat">Soğuk</div><div class="name">Kutu İçecek</div><div class="desc">Kola • Gazoz • Portakal</div></div><div class="price">60 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=420&q=86" alt="Soğuk Kahve"><div><div class="cat">Kahve</div><div class="name">Soğuk Kahve</div><div class="desc">Buzlu servis</div></div><div class="price">70 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=420&q=86" alt="Şişe Kola"><div><div class="cat">Soğuk</div><div class="name">Şişe Kola</div><div class="desc">Cam şişe servis</div></div><div class="price">40 TL</div></article>
+<article class="item"><img src="https://images.unsplash.com/photo-1561882468-9110e03e0f78?auto=format&fit=crop&w=420&q=86" alt="Latte"><div><div class="cat">Kahve</div><div class="name">Latte</div><div class="desc">Sütlü espresso</div></div><div class="price">75 TL</div></article>
+</section>
+<section class="qr-section"><h3>QR Menü</h3><p>Bu kodu okutunca menü doğrudan açılır.</p><div class="qr-box"><img src="data:image/png;base64,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" alt="Çelikhan Çay Evi QR Menü"></div></section><footer class="footer">Çelikhan Çay Evi • Afiyet olsun</footer>
 </div>
-<div id="help" class="help"><div class="panel"><h3>Kamera açılmıyorsa</h3><p>Chrome'da adres çubuğunun solundaki site simgesine bas → Site ayarları → Kamera → İzin ver. Sonra sayfayı yenile. Kamera başka uygulamada açıksa onu kapat.</p><button id="closeHelp" class="btn primary">TAMAM</button></div></div>
-<script>
-(()=>{
-"use strict";
-const $=id=>document.getElementById(id);
-const cards=[
-["Dark Magician",2500,2100,"#7658ff","🧙"],["Blue-Eyes White Dragon",3000,2500,"#eaf8ff","🐉"],["Red-Eyes Black Dragon",2400,2000,"#a83955","🐲"],["Exodia",1000,1000,"#ffc95f","🗿"],["Slifer",3000,3000,"#ff5f7f","🐍"],["Obelisk",4000,4000,"#5a7dff","🗿"],["Ra",4000,4000,"#ffd75a","🦅"],["Stardust Dragon",2500,2000,"#67efbc","✨"],["Utopia",2500,2000,"#f2f7ff","⚔️"],["Odd-Eyes",2500,2000,"#9b7fff","👁️"],["Firewall Dragon",2500,0,"#64eaff","🔷"],["Borreload Dragon",3000,0,"#8d65ff","🐉"]
-].map(x=>({name:x[0],atk:x[1],def:x[2],color:x[3],icon:x[4]}));
-let selected=0,camStream=null,battle=false,plp=8000,elp=8000,turn=1;
-const ctx=$("fx").getContext("2d"), monsters=[];
-function resize(){const dpr=Math.min(devicePixelRatio||1,1.5),w=innerWidth,h=innerHeight;$("fx").width=Math.round(w*dpr);$("fx").height=Math.round(h*dpr);$("fx").style.width=w+"px";$("fx").style.height=h+"px";ctx.setTransform(dpr,0,0,dpr,0,0)}
-addEventListener("resize",resize);resize();
-function status(s){$("status").textContent=s}
-function hud(){$("plp").textContent=Math.max(0,plp);$("elp").textContent=Math.max(0,elp);$("pb").style.width=Math.max(0,plp/80)+"%";$("eb").style.width=Math.max(0,elp/80)+"%"}
-function renderCards(){const q=$("search").value.toLowerCase(),box=$("cards");box.innerHTML="";cards.forEach((c,i)=>{if(q&&!c.name.toLowerCase().includes(q))return;const b=document.createElement("button");b.className="card"+(i===selected?" sel":"");b.innerHTML="<b>"+c.icon+" "+c.name+"</b><span class='stat'>ATK "+c.atk+" / DEF "+c.def+"</span><span>3B AR Lite summon</span>";b.onclick=()=>{selected=i;renderCards();status(c.name+" seçildi")};box.appendChild(b)})}
-$("search").oninput=renderCards;renderCards();hud();
-async function openCamera(){
- const v=$("cam");
- try{
-   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;v.srcObject=null;v.style.display="none";status("Kamera kapandı");$("cameraBtn").textContent="📷 KAMERA";return}
-   if(!window.isSecureContext)throw new Error("HTTPS gerekli");
-   if(!navigator.mediaDevices?.getUserMedia)throw new Error("Bu tarayıcı kamera API'sini desteklemiyor");
-   status("Kamera izni bekleniyor...");
-   let stream=null,lastErr=null;
-   const attempts=[
-     {video:{facingMode:{exact:"environment"}},audio:false},
-     {video:{facingMode:{ideal:"environment"}},audio:false},
-     {video:true,audio:false}
-   ];
-   for(const c of attempts){try{stream=await navigator.mediaDevices.getUserMedia(c);break}catch(e){lastErr=e}}
-   if(!stream)throw lastErr||new Error("Kamera alınamadı");
-   camStream=stream;v.srcObject=stream;v.style.display="block";v.muted=true;v.playsInline=true;
-   await v.play();
-   $("cameraBtn").textContent="KAMERAYI KAPAT";
-   const s=stream.getVideoTracks()[0]?.getSettings?.()||{};
-   status("Kamera açık"+(s.facingMode?" • "+s.facingMode:"")+" • ÇAĞIR ile canavar ekle");
- }catch(e){
-   console.error(e);
-   const n=e?.name||"";
-   if(n==="NotAllowedError")status("Kamera izni reddedildi → Site ayarları > Kamera > İzin ver");
-   else if(n==="NotReadableError")status("Kamera başka uygulamada kullanılıyor. Diğer kamera uygulamalarını kapat.");
-   else if(n==="NotFoundError")status("Kamera bulunamadı.");
-   else status("Kamera açılamadı: "+(e?.message||n||"bilinmeyen hata"));
- }
-}
-$("cameraBtn").onclick=openCamera;
-$("helpBtn").onclick=()=>$("help").classList.add("show");$("closeHelp").onclick=()=>$("help").classList.remove("show");
-function summon(enemy=false){const c=enemy?cards[Math.floor(Math.random()*cards.length)]:cards[selected];monsters.push({c,enemy,x:enemy?innerWidth*.65:innerWidth*.35,y:innerHeight*.48,scale:.1,alpha:1,dead:false,attacked:false,phase:Math.random()*6.28});status(c.name+" çağrıldı")}
-$("summon").onclick=()=>summon(false);
-$("battle").onclick=()=>{battle=true;$("phase").textContent="BATTLE PHASE";status("Saldırı hazır")};
-$("attack").onclick=()=>{if(!battle)return status("Önce BATTLE'a geç");const a=monsters.find(m=>!m.enemy&&!m.dead&&!m.attacked);if(!a)return status("Saldırabilecek canavar yok");a.attacked=true;const d=monsters.find(m=>m.enemy&&!m.dead);if(!d){elp-=a.c.atk;status("Doğrudan "+a.c.atk+" hasar");hud();return}a.punch=1;setTimeout(()=>{if(a.c.atk>=d.c.atk){elp-=Math.max(0,a.c.atk-d.c.atk);d.dead=true;status("Rakip canavar yok edildi")}else{plp-=d.c.atk-a.c.atk;a.dead=true;status("Karşı hasar "+(d.c.atk-a.c.atk))}hud()},320)};
-$("end").onclick=()=>{battle=false;$("phase").textContent="MAIN PHASE";$("who").textContent="RAKİP TURU";summon(true);setTimeout(()=>{const a=monsters.find(m=>m.enemy&&!m.dead),d=monsters.find(m=>!m.enemy&&!m.dead);if(a){if(d&&a.c.atk>=d.c.atk){plp-=a.c.atk-d.c.atk;d.dead=true}else if(!d)plp-=a.c.atk}turn++;monsters.forEach(m=>m.attacked=false);$("who").textContent="SENİN TURUN";hud();status("Tur "+turn)},650)};
-function drawMonster(m,t){
- if(m.dead){m.alpha-=.035;m.scale*=.96;if(m.alpha<=0)return}
- m.scale=Math.min(1,m.scale+.05);const bob=Math.sin(t*.002+m.phase)*7,base=m.enemy?110:125,s=base*m.scale;
- let x=m.x,y=m.y+bob;if(m.punch){x+=(m.enemy?-1:1)*Math.sin((1-m.punch)*Math.PI)*80;m.punch-=.045;if(m.punch<=0)m.punch=0}
- ctx.save();ctx.globalAlpha=Math.max(0,m.alpha);ctx.translate(x,y);ctx.scale(m.enemy?-1:1,1);
- ctx.shadowBlur=30;ctx.shadowColor=m.c.color;ctx.strokeStyle=m.c.color;ctx.lineWidth=3;ctx.fillStyle="rgba(5,10,18,.72)";
- ctx.beginPath();ctx.ellipse(0,s*.48,s*.34,s*.09,0,0,Math.PI*2);ctx.fill();ctx.stroke();
- ctx.fillStyle=m.c.color;ctx.globalAlpha*=.9;ctx.beginPath();ctx.moveTo(0,-s*.55);ctx.lineTo(s*.20,-s*.08);ctx.lineTo(s*.14,s*.34);ctx.lineTo(-s*.14,s*.34);ctx.lineTo(-s*.20,-s*.08);ctx.closePath();ctx.fill();
- ctx.fillStyle="#eef7ff";ctx.beginPath();ctx.arc(0,-s*.64,s*.10,0,Math.PI*2);ctx.fill();
- ctx.font=Math.round(s*.24)+"px system-ui";ctx.textAlign="center";ctx.fillText(m.c.icon,0,-s*.15);
- ctx.font="700 11px system-ui";ctx.fillStyle="#fff";ctx.fillText(m.c.name,0,s*.62);ctx.font="9px system-ui";ctx.fillStyle="#c9d4e6";ctx.fillText("ATK "+m.c.atk,0,s*.74);
- ctx.restore();
-}
-function loop(t){ctx.clearRect(0,0,innerWidth,innerHeight);monsters.forEach(m=>drawMonster(m,t));requestAnimationFrame(loop)}
-requestAnimationFrame(loop);summon(false);setTimeout(()=>summon(true),250);
-})();
-</script>
 </body>
 </html>
