@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#08160d">
 <title>Çelikhan Çay Evi • Menü</title>
 <link rel="preconnect" href="https://images.unsplash.com">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
 <style>
 :root{--bg:#f5f7f5;--ink:#112019;--muted:#748178;--green:#0d7f45;--gold:#d5b469;--line:#e0e7e2;--card:#fff}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(800px 420px at 0 -8%,rgba(27,154,82,.15),transparent 60%),radial-gradient(700px 400px at 100% 0,rgba(213,180,105,.12),transparent 58%),var(--bg);color:var(--ink)}
@@ -16,7 +17,7 @@
 .intro{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.intro h2{margin:0;font-size:30px;letter-spacing:-.04em}.badge{background:#e8f7ed;color:#0a7640;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.item{display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:center;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;padding:11px;box-shadow:0 10px 26px rgba(11,42,25,.07)}
 .item img{width:100px;height:88px;object-fit:cover;border-radius:16px;background:#e8eee9}.name{font-size:18px;font-weight:900}.desc{font-size:12px;color:var(--muted);margin-top:4px}.price{font-size:20px;font-weight:950;color:var(--green);white-space:nowrap}.cat{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#96743d;font-weight:900;margin-bottom:4px}
-.footer{text-align:center;color:#87938d;font-size:12px;padding:30px 0 5px}
+.qr-section{margin:26px auto 4px;text-align:center;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 12px 30px rgba(11,42,25,.08)}.qr-section h3{margin:0 0 6px;font-size:20px}.qr-section p{margin:0 0 14px;color:var(--muted);font-size:12px}.qr-box{width:230px;max-width:100%;margin:0 auto;background:#fff;padding:12px;border-radius:18px;border:1px solid #e3e9e5}.qr-box img,.qr-box canvas{display:block!important;max-width:100%!important;height:auto!important;margin:auto}.footer{text-align:center;color:#87938d;font-size:12px;padding:30px 0 5px}
 @media(max-width:650px){.grid{grid-template-columns:1fr}.item{grid-template-columns:82px 1fr auto;border-radius:18px}.item img{width:82px;height:72px}.hero{padding-top:22px}.logo{width:60px;height:60px;border-radius:20px}.intro h2{font-size:26px}}
 </style>
 </head>
@@ -36,7 +37,7 @@
 <article class="item"><img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=420&q=86" alt="Şişe Kola"><div><div class="cat">Soğuk</div><div class="name">Şişe Kola</div><div class="desc">Cam şişe servis</div></div><div class="price">40 TL</div></article>
 <article class="item"><img src="https://images.unsplash.com/photo-1561882468-9110e03e0f78?auto=format&fit=crop&w=420&q=86" alt="Latte"><div><div class="cat">Kahve</div><div class="name">Latte</div><div class="desc">Sütlü espresso</div></div><div class="price">75 TL</div></article>
 </section>
-<footer class="footer">Çelikhan Çay Evi • Afiyet olsun</footer>
+<section class="qr-section"><h3>QR Menü</h3><p>Bu kodu okutunca menü doğrudan açılır.</p><div class="qr-box" id="menuQr"></div></section><footer class="footer">Çelikhan Çay Evi • Afiyet olsun</footer>
 </div>
-</body>
+<script>new QRCode(document.getElementById("menuQr"),{text:location.href.split("#")[0],width:206,height:206,colorDark:"#07150d",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});<\/script></body>
 </html>
