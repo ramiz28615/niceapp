@@ -142,7 +142,7 @@ if(localStorage.getItem("celikhan-theme")==="dark")document.body.classList.add("
 
 
 var qrScanner=null;
-function publicMenuUrl(){var base=location.href.split("#")[0].split("?")[0];return base+"?menu=1"}
+function publicMenuUrl(){return location.href.split("#")[0].split("?")[0].replace(/index\.html$/,"")+"menu.html"}
 function renderQrProducts(){var box=document.querySelector("#qrProducts");if(!box)return;box.innerHTML=P.map(function(p){return '<div class="qr-product"><span>'+p.name+'</span><b>'+money(p.price)+'</b></div>'}).join("")}
 function buildQr(){var target=publicMenuUrl(),holder=document.querySelector("#qrcode");document.querySelector("#qrLink").value=target;holder.innerHTML="";new QRCode(holder,{text:target,width:232,height:232,colorDark:"#07150d",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});renderQrProducts()}
 function stopQrScanner(){if(qrScanner){qrScanner.stop().catch(function(){}).finally(function(){qrScanner.clear().catch(function(){});qrScanner=null})}}
@@ -150,7 +150,7 @@ function switchQrTab(name){document.querySelectorAll(".qr-tab").forEach(function
 function openQrModal(){document.querySelector("#qrModal").classList.add("show");switchQrTab("show");buildQr()}
 function closeQrModal(){stopQrScanner();document.querySelector("#qrModal").classList.remove("show")}
 document.querySelector("#qrFab").onclick=openQrModal;document.querySelector("#qrTop").onclick=openQrModal;document.querySelector("#qrClose").onclick=closeQrModal;document.querySelector("#qrModal").onclick=function(e){if(e.target===e.currentTarget)closeQrModal()};document.querySelectorAll(".qr-tab").forEach(function(b){b.onclick=function(){switchQrTab(b.dataset.qrTab)}});document.querySelector("#copyQr").onclick=function(){navigator.clipboard.writeText(document.querySelector("#qrLink").value).then(function(){toast("QR bağlantısı kopyalandı")})};document.querySelector("#openMenuLink").onclick=function(){location.href=publicMenuUrl()};
-if(new URLSearchParams(location.search).get("menu")==="1"){document.title="Çelikhan Çay Evi • QR Menü";document.querySelector("#qrFab").style.display="none";var st=document.querySelector(".status");if(st)st.innerHTML='<span><span class="dot" style="display:inline-block;margin-right:10px"></span><b>QR Menü açık</b></span><span>Fiyatlar güncel</span>'}
+
 
 setInterval(function(){$("#clock").textContent=new Date().toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})},1000);render();
 </script>
