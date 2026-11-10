@@ -1,10 +1,11 @@
-name: Deploy Çelikhan Çay Evi to GitHub Pages
+name: Deploy Çelikhan Çay Evi and LUMORA 3D to GitHub Pages
 
 on:
   push:
     branches: ["main"]
     paths:
       - "celikhan-cay-evi/**"
+      - "lumora-3d/**"
       - ".github/workflows/celikhan-pages.yml"
   workflow_dispatch:
 
@@ -32,10 +33,19 @@ jobs:
         with:
           enablement: true
 
+      - name: Stage existing Çelikhan site and LUMORA 3D
+        run: |
+          mkdir -p _site/lumora-3d
+          cp -a celikhan-cay-evi/. _site/
+          cp -a lumora-3d/. _site/lumora-3d/
+          touch _site/.nojekyll
+          test -f _site/index.html
+          test -f _site/lumora-3d/index.html
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./celikhan-cay-evi
+          path: ./_site
 
       - name: Deploy
         id: deployment
