@@ -1,14 +1,15 @@
-# LUMORA 3D — Premium 3D Alışveriş Deneyimi
+# LUMORA — Alışverişin Yeni Hali
 
-LUMORA 3D, **tek dosyada HTML + CSS + JavaScript** kullanan responsive bir e-ticaret **frontend demosudur**. `index.html` dosyasında modern ürün keşfi, canlı filtreler, favoriler, sepet, demo sipariş ve interaktif 3D showroom yer alır.
+Özgün, tamamen Türkçe ve Apple'ın Human Interface Guidelines ilkelerindeki açıklık, görsel hiyerarşi, erişilebilirlik ve anlamlı hareket yaklaşımından **ilham alan**, bağımsız bir premium 3D alışveriş **frontend demosu**. Apple ile ilişkili veya Apple onaylı değildir.
 
-## Çalışan özellikler
+## Özellikler
 
-- 24 örnek ürün, kategoriler, dinamik arama, fiyat ve puan filtreleri, sıralama.
-- Favorilere ekleme, stok kontrolü, sepet, kupon (**MERHABA10**), demo hesap ve demo sipariş geçmişi.
-- Three.js WebGL 3D vitrini: kulaklık, sneaker ve saat için **temsili geometriler**, fareyle/dokunarak döndürme, renk seçimi, otomatik dönüş ve fare tekeriyle zoom.
-- Mobil uyumlu tasarım, açık/koyu tema, hareket azaltma tercihi, WebGL/CDN olmadığında alternatif önizleme.
-- Arayüz verileri tarayıcının `localStorage` alanında tutulur.
+- Tek dosya: `index.html` (HTML + CSS + vanilla JavaScript).
+- Büyük premium açılış ekranı, CSS ürün illüstrasyonu, editoryal koleksiyon panoları; mobil ve masaüstü tasarım.
+- 24 temsili ürün; arama ve öneriler, kategori, fiyat, puan, stok filtreleri ve sıralama.
+- Ürün detayları, favoriler, sepet, indirim kodu `MERHABA10`, demo profil, demo sipariş ve sipariş geçmişi.
+- Three.js showroom: kulaklık, sneaker ve saat için **temsili geometriler**, renk seçimi, döndürme, yakınlaştırma, otomatik dönüş.
+- Açık/koyu tema, dokunmatik menü, azaltılmış hareket ve WebGL olmadan alternatif önizleme.
 
 ## Çalıştırma
 
@@ -17,26 +18,17 @@ cd lumora-3d
 python -m http.server 8000
 ```
 
-Tarayıcıda `http://localhost:8000/` adresini aç. İstersen `index.html` dosyasını doğrudan da açabilirsin. Gerçek 3D render için **internet bağlantısı** gerekir: Three.js modülü CDN'den yüklenir. Ürün fotoğrafları Unsplash kaynaklıdır; yüklenemezse alternatif emoji görselleri kullanılır.
+Tarayıcıdan `http://localhost:8000` adresine git. CSS/JS tek dosyadadır, ancak 3D motoru (Three.js) ve bazı fotoğraflar CDN gerektirdiğinden internete ihtiyaç duyar.
 
-## Lovable / Base44 tarzı geliştirme
+## Önemli üretim sınırı
 
-**Bu demo Lovable veya Base44 hesabına bağlı değildir.** Tasarım ve ürün geliştirme yaklaşımı bu platformlardan ilham alır. Gerçek mağazaya dönüştürmek için:
+Bu uygulama **gerçek ödeme, kimlik doğrulama, gönderi veya sunucu siparişi yapmaz.** Tüm ürünler, fiyatlar, değerlendirmeler ve siparişler temsili örneklerdir. Bazı demo tercihler tarayıcıda saklanır. Gerçek mağaza için güvenli backend, veritabanı, stok kontrolü, kullanıcı yetkileri, ödeme sağlayıcısı, yasal metinler, KVKK ve testler gerekir. Lovable/Base44 bağlantısı etkin değildir.
 
-1. Base44 veya seçilen backend üzerinde ürün, kategori, stok, kullanıcı, sepet, sipariş, sipariş kalemi, adres ve kampanya veri modelleri oluştur.
-2. Gerçek kimlik doğrulama, yetkilendirme ve yönetici paneli kur.
-3. Ödeme sağlayıcısını yalnızca güvenli backend fonksiyonları üzerinden bağla. Kart bilgilerini localStorage'a kaydetme.
-4. Stok, fiyat, indirim, vergilendirme ve sipariş tutarını sunucuda yeniden doğrula.
-5. KVKK, mesafeli satış, kargo ve iade akışlarını tamamla.
-6. Canlıya çıkmadan önce yetki, güvenlik, erişilebilirlik ve mobil uçtan uca testleri yap.
+## Kaynaklar
 
-## Kaynak ve referanslar
+- [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/) — genel tasarım ilkeleri
+- [Agentic Awesome Skills](https://github.com/sickn33/agentic-awesome-skills)
+- [Awesome](https://github.com/sindresorhus/awesome)
+- [Lovable](https://docs.lovable.dev/) · [Base44](https://base44.com/developers)
 
-- [Agentic Awesome Skills](https://github.com/sickn33/agentic-awesome-skills) — frontend tasarımı, QA ve erişilebilirlik kılavuzları
-- [Awesome](https://github.com/sindresorhus/awesome) — geliştirici kaynak indeksleri
-- [Lovable dokümantasyonu](https://docs.lovable.dev/)
-- [Base44 developers](https://base44.com/developers)
-
-## Önemli
-
-**Bu sitede gerçek tahsilat, kargo, üyelik doğrulama veya sunucu siparişi yapılmaz.** Ürün, fiyat, yorum ve 3D modeller temsili örneklerdir. API anahtarlarını repoya yüklemeyin.
+© LUMORA — özgün demo projesi.
